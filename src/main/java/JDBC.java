@@ -1,6 +1,4 @@
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+import java.sql.*;
 
 public class JDBC {
 
@@ -47,8 +45,33 @@ public class JDBC {
 
         String query = "SELECT * FROM u168183796_qaloantec.users";
 
+        Statement statement = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_READ_ONLY);
+
+        // 4.ADIM: Query Execute et
+
+        ResultSet resultSet = statement.executeQuery(query);
+
+
+        // 5. ADIM: Sonuclari Isle
+
+        resultSet.next();
+        System.out.println(resultSet.getString("firstname"));   // Mehmet
+
+
+        resultSet.next();
+        System.out.println(resultSet.getString("firstname"));   // Test
+
+        resultSet.next();
+        System.out.println(resultSet.getString("lastname"));    // Genç
+
+        System.out.println(resultSet.getString("country_code"));    //US
+
+        resultSet.absolute(10); // direkt 10. satıra \ iterator'a gider
+        System.out.println(resultSet.getString("email"));   //aliyuksel@gmail.com
+
+        resultSet.first();  //1. satıra, iterator'a gider
+        System.out.println(resultSet.getInt("id")); //1
 
 
     }
-
 }
