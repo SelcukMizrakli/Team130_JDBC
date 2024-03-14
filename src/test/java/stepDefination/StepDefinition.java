@@ -5,6 +5,7 @@ import manage.QueryManage;
 import org.junit.Assert;
 import utilities.JDBCReusableMethods;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -14,8 +15,10 @@ import static org.junit.Assert.assertEquals;
 
 public class StepDefinition {
 
+    PreparedStatement preparedStatement;
     ResultSet resultSet;
     String query;
+    int rowCount;
 
     QueryManage queryManage = new QueryManage();
 
@@ -81,5 +84,77 @@ public class StepDefinition {
         }
 
     }
+
+    // ------------------UPDATE QUERY 01 (Normal Statement ile) ------------------------
+
+    @Given("UpdateQuery01 olusturulur. ve execute edilir.")
+    public void update_query01_olusturulur_ve_execute_edilir() throws SQLException {
+
+        query = queryManage.getUpdateQuery01();
+        rowCount = JDBCReusableMethods.updateQuery(query);
+
+    }
+    @Given("UpdateQuery01 sonuclari islenir.")
+    public void update_query01_sonuclari_islenir() {
+
+        assertEquals(18, rowCount);
+    }
+
+    // ------------------UPDATE QUERY 02 (Prepared Statement ile) ------------------------
+
+
+    @Given("Prepared UpdateQuery01 olusturulur. ve execute edilir.")
+    public void prepared_update_query01_olusturulur_ve_execute_edilir() throws SQLException {
+
+        query = queryManage.getUpdateQuery02();
+
+        preparedStatement = JDBCReusableMethods.getConnection().prepareStatement(query);
+
+        preparedStatement.setInt(1, 147852369);
+        preparedStatement.setString(2, "%e_");
+
+        rowCount = preparedStatement.executeUpdate();
+
+
+    }
+    @Given("Prepared UpdateQuery01 sonuclari islenir.")
+    public void prepared_update_query01_sonuclari_islenir() {
+
+        assertEquals(18,rowCount);
+    }
+
+
+// ------------------- INSERT QUERY 03 ----------------------------
+
+    @Given("InsertQuery hazirlanir ve execute edilir")
+    public void ınsert_query_hazirlanir_ve_execute_edilir() throws SQLException {
+
+        query = queryManage.getInsertQuery03();
+        preparedStatement = JDBCReusableMethods.getConnection().prepareStatement(query);
+
+        // INSERT INTO u168183796_qaloantec.admin_password_resets
+        // (id,email,token,status) VALUES (?,?,?,?);
+
+
+        preparedStatement.setInt(1, 20);
+        preparedStatement.setString(2,"tyuzotuz@gmail.com");
+        preparedStatement.setString(3, "T13099");
+        preparedStatement.setInt(4,1);
+
+        rowCount = preparedStatement.executeUpdate();
+
+
+    }
+    @Given("InsertQuery sonuclari dogrulanir")
+    public void ınsert_query_sonuclari_dogrulanir() {
+
+        assertEquals(1,rowCount);
+
+    }
+
+
+
+
+
 
 }
